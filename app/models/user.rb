@@ -3,6 +3,8 @@
 class User < ApplicationRecord
   has_secure_password
 
+  MAILER_FROM_EMIAL = "no-reply@example.com"
+
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true, uniqueness: true
   normalizes :email, with: ->(email) { email.downcase.strip }
 
@@ -20,5 +22,10 @@ class User < ApplicationRecord
 
   def unconfirmed?
     !confirmed?
+  end
+
+  def send_confirmation_email!
+    confirmation_token = generate_token_for(:confirm_email)
+    UserMailer.with(user: self, confirmation_token:).confirmation.deliver_later
   end
 end
