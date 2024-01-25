@@ -1,0 +1,44 @@
+<%= form_with model: @user, url: account_path, method: :put do |form| %>
+  <%= render partial: "shared/form_errors", locals: { object: form.object } %>
+  <div>
+    <%= form.label :email, "Curent Email" %>
+    <%= form.email_field :email, disabled: true %>
+  </div>
+  <div>
+    <%= form.label :unconfirmed_email, "New Email" %>
+    <%= form.email_field :unconfirmed_email %>
+  </div>
+  <div>
+    <%= form.label :password_challenge, "Current Password (we need your current password to confirm changes)" %>
+    <%= form.password_field :password_challenge, required: true %>
+  </div>
+  <div>
+    <%= form.label :password, "New Password (leave blank if you don't want to change it)" %>
+    <%= form.password_field :password %>
+  </div>
+  <div>
+    <%= form.label :password_confirmation, "Confirm new password" %>
+    <%= form.password_field :password_confirmation %>
+  </div>
+  <%= form.submit "Update Account" %>
+<% end %>
+
+<%= button_to "Delete Account", account_path(@user), method: :delete %>
+
+<h2>Current Logins</h2>
+<% if @active_sessions.any? %>
+  <%= button_to "Log out of all other sessions", destroy_all_active_sessions_path, method: :delete %>
+  <table>
+    <thead>
+      <tr>
+        <th>User Agent</th>
+        <th>Ip Address</th>
+        <th>Signed In At</th>
+        <th>Sign Out</th>
+      <tr>
+    </thead>
+    <tbody>
+      <%= render @active_sessions %>
+    </tbody>
+  </table>
+<% end %>
